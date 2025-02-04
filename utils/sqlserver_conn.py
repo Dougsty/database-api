@@ -26,7 +26,6 @@ def sqlconnection() -> create_engine:
     database = os.getenv("DB_NAME")
     port = os.getenv("DB_PORT")
 
-    print(username, password, server, database, port)
     # Construct the connection string
     connection_string = (
         f"mssql+pymssql://{username}:{password}@{server},{port}/{database}"
