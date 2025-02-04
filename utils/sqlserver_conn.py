@@ -2,6 +2,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.exc import SQLAlchemyError
 import os
 
+
 def sqlconnection() -> create_engine:
     """
     Establishes a connection to a SQL Server database using the provided credentials.
@@ -19,7 +20,9 @@ def sqlconnection() -> create_engine:
     database = os.getenv("DB_NAME")
     port = os.getenv("DB_PORT")
     # Construct the connection string
-    connection_string = f"mssql+pymssql://{username}:{password}@{server},{port}/{database}"
+    connection_string = (
+        f"mssql+pymssql://{username}:{password}@{server},{port}/{database}"
+    )
 
     try:
         # Create the SQLAlchemy engine
