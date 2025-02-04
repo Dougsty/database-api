@@ -1,6 +1,12 @@
 from sqlalchemy import create_engine
 from sqlalchemy.exc import SQLAlchemyError
+from dotenv import load_dotenv
 import os
+
+# Carrega o arquivo .env da pasta config
+base_dir = os.path.dirname(os.path.abspath(__file__))
+env_path = os.path.join(base_dir, "..", "config", ".env")
+load_dotenv(env_path)
 
 
 def sqlconnection() -> create_engine:
@@ -19,6 +25,8 @@ def sqlconnection() -> create_engine:
     server = os.getenv("DB_SERVER")
     database = os.getenv("DB_NAME")
     port = os.getenv("DB_PORT")
+
+    print(username, password, server, database, port)
     # Construct the connection string
     connection_string = (
         f"mssql+pymssql://{username}:{password}@{server},{port}/{database}"
