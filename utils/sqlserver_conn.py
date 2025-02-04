@@ -1,5 +1,4 @@
-from sqlalchemy import create_engine
-from sqlalchemy.exc import SQLAlchemyError
+import pymssql
 from dotenv import load_dotenv
 import os
 
@@ -9,7 +8,7 @@ env_path = os.path.join(base_dir, "..", "config", ".env")
 load_dotenv(env_path)
 
 
-def sqlconnection() -> create_engine:
+def sqlconnection() -> pymssql.connect:
     """
     Establishes a connection to a SQL Server database using the provided credentials.
 
@@ -26,19 +25,17 @@ def sqlconnection() -> create_engine:
     database = os.getenv("DB_NAME")
     port = os.getenv("DB_PORT")
 
-    # Construct the connection string
-    connection_string = (
-        f"mssql+pymssql://{username}:{password}@{server}:{port}/{database}"
-    )
-
     try:
-        # Create the SQLAlchemy engine
-        engine = create_engine(connection_string)
-
+        conn = pymssql.connect(
+            server=server,
+            user=username,
+            password=password,
+            database=database,
+            port=port,
+        )
+        print("Conexão bem-sucedida!")
         # Test the connection
-        with engine.connect() as connection:
-            print("Conexão bem-sucedida!")
-        return engine
-    except SQLAlchemyError as e:
+        return conn
+    except Exception as e:
         print(f"Erro ao conectar ao banco de dados: {e}")
         raise
