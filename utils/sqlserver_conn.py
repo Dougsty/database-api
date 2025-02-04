@@ -28,7 +28,7 @@ def sqlconnection() -> create_engine:
 
     # Construct the connection string
     connection_string = (
-        f"mssql+pymssql://{username}:{password}@{server},{port}/{database}"
+        f"mssql+pymssql://{username}:{password}@{server}:{port}/{database}"
     )
 
     try:
