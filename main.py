@@ -1,53 +1,31 @@
-from flask import Flask, request, jsonify
+from flask import Flask, jsonify
+import pandas as pd
+from utils.sqlserver_conn import sqlconnection
 
 app = Flask(__name__)
 
-books = [
-    {"id": 1, "title": "Clean Code", "author": "Robert C. Martin", "read": False},
-    {
-        "id": 2,
-        "title": "The Pragmatic Programmer",
-        "author": "Andrew Hunt, David Thomas",
-        "read": False,
-    },
-    {
-        "id": 3,
-        "title": "Design Patterns",
-        "author": "Erich Gamma, Richard Helm, Ralph Johnson, John Vlissides",
-        "read": False,
-    },
-]
 
+@app.route("/departments", methods=["GET"])
+def get_departments():
+    query = """
+    SELECT 
+        *
+    FROM adventureworks2022.HumanResources.Department
+    """
 
-# Consultar todos os livros
-@app.route("/books", methods=["GET"])
-def get_book():
-    return jsonify(books)
+    # Estabelece a conexão com o banco de dados
+    conn = sqlconnection()
 
+    # Executa a consulta e obtém os resultados
+    tables = pd.read_sql(query, conn)
 
-# Consultar um livro por ID
-@app.route("/books/<int:id>", methods=["GET"])
-def get_book_by_id(id):
-    for book in books:
-        if book["id"] == id:
-            return jsonify(book)
-    return None
+    # Fecha a conexão
+    conn.close()
 
-# editar um livro por ID
-@app.route("/books/<int:id>", methods=["PUT"])
-def update_book_by_id(id):
-    updated_book = request.get_json()
-    for index, book in enumerate(books):
-        if book["id"] == id:
-            books[index].update(updated_book)
-            return jsonify(book[index])
-    return None
+    # Converte os resultados para JSON
+    result = tables.to_dict(orient="records")
 
-# Adicionar um livro
-@app.route("/books", methods=["POST"])
-def add_book():
-    new_book = request.get_json()
-    books.append(new_book)
-    return jsonify(books)
+    return jsonify(result)
+
 
 app.run(port=5000, host="localhost", debug=True)
