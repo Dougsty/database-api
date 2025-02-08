@@ -27,5 +27,5 @@ def get_departments():
 
     return jsonify(result)
 
-
-app.run(port=5000, host="localhost", debug=True)
+if __name__ == "__main__":
+    app.run(port=5000, host="localhost", debug=True)
